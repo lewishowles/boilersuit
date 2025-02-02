@@ -40,6 +40,38 @@ export const createHelpers = toolbox => {
 	};
 
 	/**
+	 * Replace placeholders in all files in the given directory.
+	 *
+	 * @param  {string}  directory
+	 *     The directory in which to find files.
+	 * @param  {object}  replacements
+	 *     The replacements to make.
+	 */
+	const replacePlaceholders = ({ directory = ".", replacements } = {}) => {
+		const files = filesystem.find(directory, {
+			matching: ["**/*", "!**/.git/**", "!**/node_modules/**"],
+		});
+
+		files.forEach(file => {
+			if (filesystem.isFile(file)) {
+				let content = filesystem.read(file);
+
+				if (content) {
+					Object.entries(replacements).forEach(([placeholder, value]) => {
+						const regex = new RegExp(`{{${placeholder}}}`, "g");
+
+						content = content.replace(regex, value);
+					});
+
+					filesystem.write(file, content);
+				}
+			}
+		});
+
+		printSuccess("Placeholders replaced successfully.");
+	};
+
+	/**
 	 * Print an error message, with default formatting.
 	 *
 	 * @param  {string}  message
@@ -64,5 +96,6 @@ export const createHelpers = toolbox => {
 		ensureEmptyDirectory,
 		printError,
 		printSuccess,
+		replacePlaceholders,
 	};
 };
