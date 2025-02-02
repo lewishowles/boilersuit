@@ -14,3 +14,9 @@ bunx link
 You can then use the `boilerplate` command from anywhere.
 
 ## Creating a new project
+
+Creating a new project is as simple as using the `boilerplate` command and answering the questions provided. Your output will look something like this.
+
+```
+✔ Project name · my-super-cool-project
+```

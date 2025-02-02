@@ -1,3 +1,5 @@
+import { execSync } from "child_process";
+
 export const createHelpers = toolbox => {
 	const { filesystem, print } = toolbox;
 
@@ -7,12 +9,33 @@ export const createHelpers = toolbox => {
 	 * @param  {string}  options.errorMessage
 	 *     The message to display if the directory is not empty.
 	 */
-	const ensureEmptyDirectory = ({ errorMessage } = {}) => {
-		const files = filesystem.list(".");
+	const ensureEmptyDirectory = ({ path = ".", errorMessage } = {}) => {
+		const files = filesystem.list(path);
 
 		if (files.length > 0) {
 			printError(errorMessage);
 			process.exit();
+		}
+	};
+
+	/**
+	 * Clone the given repo into the current directory.
+	 *
+	 * @param  {string}  options.url
+	 *     The URL of the repo to clone.
+	 * @param  {string}  options.successMessage
+	 *     The message to display on successful clone.
+	 */
+	const cloneRepo = ({ url, successMessage } = {}) => {
+		const cloneCommand = `git clone ${url} .`;
+
+		try {
+			execSync(cloneCommand, { stdio: "inherit" });
+			print.newline();
+			printSuccess(successMessage);
+		} catch (error) {
+			printError("Failed to download the repository.");
+			printError(error.message);
 		}
 	};
 
@@ -37,6 +60,7 @@ export const createHelpers = toolbox => {
 	};
 
 	return {
+		cloneRepo,
 		ensureEmptyDirectory,
 		printError,
 		printSuccess,
