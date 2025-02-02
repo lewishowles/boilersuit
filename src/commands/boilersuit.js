@@ -1,4 +1,5 @@
 import { createHelpers } from "../helpers/helper-provider.js";
+import colors from "colors";
 
 export default {
 	name: "boilersuit",
@@ -6,59 +7,59 @@ export default {
 		const { filesystem, print, prompt } = toolbox;
 		const helpers = createHelpers(toolbox);
 
-		print.newline();
+		print.info(`
+  _           _ _                     _ _
+ | |         (_) |                   (_) |
+ | |__   ___  _| | ___ _ __ ___ _   _ _| |_
+ | '_ \\ / _ \\| | |/ _ \\ '__/ __| | | | | __|
+ | |_) | (_) | | |  __/ |  \\__ \\ |_| | | |_
+ |_.__/ \\___/|_|_|\\___|_|  |___/\\__,_|_|\\__|
+`);
 
-		// Prompt for the project name
-		const packageNameResponse = await prompt.ask({
-			type: "input",
-			name: "packageName",
-			message: "Project name",
+		const packageName = await helpers.askQuestion({
+			title: "Package name",
+			text: "This is used as the package name in package.json, so should follow the appropriate format.",
 			initial: "my-super-cool-project",
 		});
 
-		// Use the provided project name to set the initial value for the site title
-		const placeholdersResponse = await prompt.ask([
-			{
-				type: "input",
-				name: "siteTitle",
-				message: "Site title",
-				initial: packageNameResponse.packageName.charAt(0).toUpperCase() + packageNameResponse.packageName.slice(1).replace(/-/g, " ").toLowerCase(),
-			},
-			{
-				type: "input",
-				name: "siteDescription",
-				message: "Site description",
-			},
-			{
-				type: "input",
-				name: "siteUrl",
-				message: "Site URL",
-				initial: `https://lewishowles.github.io/${packageNameResponse.packageName.toLowerCase()}/`,
-			},
-			{
-				type: "input",
-				name: "themeColour",
-				message: "Theme colour",
-				initial: "#a3004c",
-			},
-			{
-				type: "input",
-				name: "baseUrl",
-				message: "Base URL",
-				initial: `/${packageNameResponse.packageName.toLowerCase()}/`,
-			},
-		]);
+		const siteTitle = await helpers.askQuestion({
+			title: "Site title",
+			text: "The site title is used for the <title> tag, as well as various other locations.",
+			initial: packageName.charAt(0).toUpperCase() + packageName.slice(1).replace(/-/g, " ").toLowerCase(),
+		});
 
+		const siteDescription = await helpers.askQuestion({
+			title: "Site description",
+			text: "The description is used in both the meta and package description fields.",
+		});
+
+		const siteUrl = await helpers.askQuestion({
+			title: "Site URL",
+			text: "The site URL is used in the og:url meta tag.",
+			initial: `https://lewishowles.github.io/${packageName.toLowerCase()}/`,
+		});
+
+		const themeColour = await helpers.askQuestion({
+			title: "Theme colour",
+			text: "The theme colour is used for the mask-image favicon, as well as the manifest file.",
+			initial: "#a3004c",
+		});
+
+		const baseUrl = await helpers.askQuestion({
+			title: "Base URL",
+			text: `The base URL is used for Vite and is necessary if the site is not hosted at the root of its domain.\nFor example, the base URL for https://lewishowles.github.io/components would be ${colors.magenta("components")}`,
+			initial: `/${packageName.toLowerCase()}/`,
+		});
 
 		// Create the appropriate directory.
-		filesystem.dir(packageNameResponse.packageName);
+		filesystem.dir(packageName);
 
 		// Change to our new directory to simplify future commands.
-		process.chdir(packageNameResponse.packageName);
+		process.chdir(packageName);
 
 		// First, we ensure that the directory is empty.
 		helpers.ensureEmptyDirectory({
-			errorMessage: `Please ensure project directory <${packageNameResponse.packageName}> is empty, as we will be cloning the boilerplate into it.`,
+			errorMessage: `Please ensure project directory <${packageName}> is empty, as we will be cloning the boilerplate into it.`,
 		});
 
 		print.newline();
@@ -71,12 +72,12 @@ export default {
 
 		// Replace placeholders
 		const replacements = {
-			PACKAGE_NAME: packageNameResponse.packageName,
-			SITE_TITLE: placeholdersResponse.siteTitle,
-			SITE_DESCRIPTION: placeholdersResponse.siteDescription,
-			SITE_URL: placeholdersResponse.siteUrl,
-			THEME_COLOUR: placeholdersResponse.themeColour,
-			BASE_URL: placeholdersResponse.baseUrl,
+			PACKAGE_NAME: packageName,
+			SITE_TITLE: siteTitle,
+			SITE_DESCRIPTION: siteDescription,
+			SITE_URL: siteUrl,
+			THEME_COLOUR: themeColour,
+			BASE_URL: baseUrl,
 		};
 
 		helpers.replacePlaceholders({ replacements });

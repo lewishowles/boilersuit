@@ -1,7 +1,8 @@
 import { execSync } from "child_process";
+import colors from "colors";
 
 export const createHelpers = toolbox => {
-	const { filesystem, print } = toolbox;
+	const { filesystem, print, prompt } = toolbox;
 
 	/**
 	 * Ensure that the current directory is empty.
@@ -72,6 +73,35 @@ export const createHelpers = toolbox => {
 	};
 
 	/**
+	 * Ask the user a single formatted question, with title and description.
+	 *
+	 * @param  {string}  options.title
+	 *     The title of the section.
+	 * @param  {string}  options.text
+	 *     The main description of the section.
+	 * @param  {string}  options.initial
+	 *     The initial suggested value for the question response.
+	 */
+	const askQuestion = async({ title, text, initial } = {}) => {
+		print.newline();
+
+		print.info(colors.bold.magenta(title));
+		print.info(`${text}`);
+
+		print.newline();
+
+		// Prompt for the project name
+		const response = await prompt.ask({
+			type: "input",
+			name: "response",
+			message: title,
+			initial,
+		});
+
+		return response.response;
+	};
+
+	/**
 	 * Print an error message, with default formatting.
 	 *
 	 * @param  {string}  message
@@ -92,6 +122,7 @@ export const createHelpers = toolbox => {
 	};
 
 	return {
+		askQuestion,
 		cloneRepo,
 		ensureEmptyDirectory,
 		printError,
