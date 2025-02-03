@@ -18,7 +18,7 @@ export default {
 
 		const packageName = await helpers.askQuestion({
 			title: "Package name",
-			text: "This is used as the package name in package.json, so should follow the appropriate format.",
+			text: "This is used to create the project directory, and as the package name in package.json,\nso should follow the appropriate format.",
 			initial: "my-super-cool-project",
 		});
 
