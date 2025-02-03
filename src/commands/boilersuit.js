@@ -47,7 +47,7 @@ export default {
 
 		const baseUrl = await helpers.askQuestion({
 			title: "Base URL",
-			text: `The base URL is used for Vite and is necessary if the site is not hosted at the root of its domain.\nFor example, the base URL for https://lewishowles.github.io/components would be ${colors.magenta("components")}`,
+			text: `The base URL is used for Vite and is necessary if the site is not hosted at the root of its domain.\nFor example, the base URL for ${colors.bold("https://lewishowles.github.io/components/")} would be ${colors.magenta("/components/")}`,
 			initial: `/${packageName.toLowerCase()}/`,
 		});
 
