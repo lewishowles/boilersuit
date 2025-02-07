@@ -4,7 +4,7 @@ import colors from "colors";
 export default {
 	name: "boilersuit",
 	run: async (toolbox) => {
-		const { filesystem, print, prompt } = toolbox;
+		const { filesystem, print } = toolbox;
 		const helpers = createHelpers(toolbox);
 
 		print.info(`
@@ -66,11 +66,12 @@ export default {
 
 		// Clone our boilerplate.
 		helpers.cloneRepo({
+			initialMessage: "Downloading boilerplate repository…",
 			url: "https://github.com/lewishowles/boilerplate",
-			successMessage: "`boilerplate` downloaded successfully",
+			successMessage: "Repository downloaded successfully.",
 		});
 
-		// Replace placeholders
+		// Replace placeholders within the project.
 		const replacements = {
 			PACKAGE_NAME: packageName,
 			SITE_TITLE: siteTitle,
@@ -81,5 +82,27 @@ export default {
 		};
 
 		helpers.replacePlaceholders({ replacements });
+
+		// Initialise git for the new project to ensure that the starting point
+		// is clean.
+		helpers.initialiseGit();
+
+		// Remind the user about the .npmrc file, and what to do next.
+		print.newline();
+		print.warning(`----------------------------------------------------------------------------------------------------------------------------
+! Before installing packages, make sure to add your \`.npmrc\` file with the necessary credentials for private repositories. !
+----------------------------------------------------------------------------------------------------------------------------`);
+
+		helpers.printNextSteps({
+			title: "Installing packages",
+			introduction: "To install packages, run:",
+			code: `cd ${packageName}\nbun i`,
+		});
+
+		helpers.printNextSteps({
+			title: "Initialising simple-git-hooks",
+			introduction: "To initialise simple-git-hooks after package installation, run:",
+			code: "bunx simple-git-hooks",
+		});
 	},
 };
