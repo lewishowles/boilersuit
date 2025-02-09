@@ -151,8 +151,11 @@ export const createHelpers = toolbox => {
 		print.newline();
 		print.info(colors.bold.magenta(title));
 		print.info(introduction);
-		print.newline();
-		print.info(colors.green(code));
+
+		if (code) {
+			print.newline();
+			print.info(colors.green(code));
+		}
 	};
 
 	/**

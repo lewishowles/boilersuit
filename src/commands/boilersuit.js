@@ -104,5 +104,10 @@ export default {
 			introduction: "To initialise simple-git-hooks after package installation, run:",
 			code: "bunx simple-git-hooks",
 		});
+
+		helpers.printNextSteps({
+			title: "meta-default.webp",
+			introduction: "Don't forget to create a `public/meta-default.webp` image for social media sharing.",
+		});
 	},
 };
