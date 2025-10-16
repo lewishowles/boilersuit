@@ -106,6 +106,11 @@ export default {
 		});
 
 		helpers.printNextSteps({
+			title: "Fonts",
+			introduction: "Be on the lookout for an error \"Downloadable font: rejected by sanitizer\". This may be due to the way the font files are downloaded from GitHub. If you see this error, replace the files with a known-good copy.",
+		});
+
+		helpers.printNextSteps({
 			title: "meta-default.webp",
 			introduction: "Don't forget to create a `public/meta-default.webp` image for social media sharing.",
 		});
